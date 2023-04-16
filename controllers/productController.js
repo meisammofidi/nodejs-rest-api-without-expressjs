@@ -26,15 +26,20 @@ async function getProduct(req, res) {
 }
 
 async function createProduct(req, res) {
-  const product = {
-    name: 'Samsung Galexy S22',
-    price: 1799,
-    category: 'Electronics',
-  };
 
-  const newProduct = await Product.create(product);
-  res.writeHead(201, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify(newProduct));
+  let body = '';
+  req.on('data', (chunk) => {
+    body += chunk.toString();
+  });
+
+  req.on('end', async () => {
+    const { title, price, category } = JSON.parse(body);
+    const product = { title, price, category}
+    const newProduct = await Product.create(product);
+    res.writeHead(201, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify(newProduct));
+  });
+
 }
 
 module.exports = {
