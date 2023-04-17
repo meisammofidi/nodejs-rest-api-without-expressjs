@@ -36,8 +36,35 @@ async function create(product) {
   });
 }
 
+async function update(id, product) {
+  return new Promise((resolve, reject) => {
+    try {
+      const productIndex = products.findIndex((p) => p.id === id);
+      products[productIndex] = { id, ...product };
+      writeDataToFile('./data/products.json', products);
+      resolve(products[productIndex]);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+async function remove(id) {
+  return new Promise((resolve, reject) => {
+    try {
+      const result = products.filter((p) => p.id !== Number(id));
+      writeDataToFile('./data/products.json', result);
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 module.exports = {
   findAll,
   findById,
   create,
+  update,
+  remove,
 };
